@@ -26,7 +26,7 @@ sts.amazonaws.com
 
 ## bucket policy:
 ---------------
-''' json
+'''json
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -39,7 +39,6 @@ sts.amazonaws.com
         }
     ]
 }
-'''
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -59,6 +58,7 @@ sts.amazonaws.com
         }
     ]
 }
+'''
 ## Installing AWS loadbalancer controller:
 ------------------------------------------
 ->curl -o iam_policy_latest.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
