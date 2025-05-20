@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: s3-config
+data:
+  AWS_STORAGE_BUCKET_NAME: 'media-static-bucket-23edft67ujiosreeram'
+  AWS_S3_REGION_NAME: us-east-1
+  AWS_S3_CUSTOM_DOMAIN: media-static-bucket-23edft67ujiosreeram.s3.us-east-1.amazonaws.com
+  ENGINE: django.db.backends.mysql
+ 

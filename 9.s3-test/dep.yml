@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: awscli
+spec:
+  selector:
+    matchLabels:
+      app: cli
+  template:
+    metadata:
+      labels:
+        app: cli
+    spec:
+      serviceAccountName: s3-access-sa
+      containers:
+      - name: demo-aws-cli
+        image: amazon/aws-cli
+        command: ['aws', 's3', 'ls']

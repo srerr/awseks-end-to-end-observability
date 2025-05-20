@@ -1,0 +1,21 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: python-instrumentation
+spec:
+  exporter: 
+    endpoint: http://otel-collector-collector.monitoring.svc.cluster.local:4318  # Correct endpoint for the Collector service
+  env:
+    #- name: OTEL_SERVICE_NAME
+    #  value: "your-django-app"  # Optional: Set your Django app's service name
+    - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED
+      value: 'true'  # Enable auto-instrumentation for Python
+  propagators:
+    - tracecontext
+    - baggage
+  python:
+    env:
+      - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED
+        value: 'true'
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: "http://otel-collector-collector.monitoring.svc.cluster.local:4317"  # Correct OTLP endpoint for tracing

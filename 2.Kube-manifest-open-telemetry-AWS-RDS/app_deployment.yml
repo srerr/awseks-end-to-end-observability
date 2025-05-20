@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-eks-test-deployment
+spec:
+  replicas: 4 
+  selector:
+    matchLabels:
+      app: aws-eks-test
+  template:
+    metadata:
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: 'monitoring/python-instrumentation'
+        #sidecar.opentelemetry.io/inject: 'true'
+      name: aws-eks-test-pod
+      labels:
+        app: aws-eks-test
+    spec:
+      serviceAccountName: s3-access-sa
+      initContainers:
+        - name: mysql-wait-init
+          image: mysql:8
+          command: ['sh', '-c', 'until mysqladmin ping -h"$HOST" -u"$USER" -p"$PASSWORD" --silent; do echo "Waiting for MySQL..."; sleep 5; done']
+          env:
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: USER
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: PASSWORD
+            - name: HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets 
+                  key: HOST
+      containers:
+        - name: aws-eks-test-container
+          image: ramguguloth/test3:v1.0
+          env:
+            - name: AWS_STORAGE_BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: s3-config
+                  key: AWS_STORAGE_BUCKET_NAME
+            - name: AWS_S3_REGION_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: s3-config
+                  key: AWS_S3_REGION_NAME
+            - name: AWS_S3_CUSTOM_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: s3-config
+                  key: AWS_S3_CUSTOM_DOMAIN  
+            - name: NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: NAME
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: USER
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef: 
+                  name: db-secrets
+                  key: PASSWORD
+            - name: HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: HOST
+            - name: PORT
+              value: "3306"
+            - name: OTEL_PYTHON_LOG_LEVEL
+              value: "DEBUG"
+            - name: OTEL_PYTHON_LOG_FORMAT
+              value: "%(asctime)s - %(levelname)s - %(message)s"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector-collector.monitoring.svc.cluster.local:4318"
+            - name: OTEL_SERVICE_NAME
+              value: "aws-eks-python-app"
+            - name: DJANGO_SETTINGS_MODULE
+              value: job.settings
+            - name: PYTHONPATH
+              value: /job
+          ports:
+            - containerPort: 8000  
