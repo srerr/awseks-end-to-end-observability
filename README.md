@@ -1,3 +1,5 @@
+![Architecture Diagram](7.tf-remaining/aws_monitoring_architecture_01.jpg)
+# AWS EKS Monitoring and Observability using OpenTelemetry, Grafana, Loki, Tempo, Prometheus, and AWS LoadBalancer Controller
 # helm show values prometheus-community/kube-prometheus-stack > kube-prometheus-stack-values.yml 
 ->aws eks --region us-east-1 update-kubeconfig --name telemetry_cluster
 ->kubectl get secret --namespace monitoring loki-grafana -o jsonpath="{.data.admin-password}" |base64 --decode ; echo
@@ -24,7 +26,20 @@ sts.amazonaws.com
 
 ## bucket policy:
 ---------------
-
+''' json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::media-static-bucket-23edft67ujiosreeram/static/*"
+        }
+    ]
+}
+'''
 {
     "Version": "2012-10-17",
     "Statement": [
