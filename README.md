@@ -116,8 +116,8 @@ ramguguloth/test:v1.0  # for local testing
 ->helm install prometheus prometheus-community/kube-prometheus-stack -f kube-prometheus-stack-values.yml
 ->kubectl port-forward -n monitoring svc/kube-prometheus-stack-prometheus 9090:9090
 
-## installing grafana tempo:
----------------------------
+## installing grafana tempo: 
+------------------------------
 ->helm repo add grafana https://grafana.github.io/helm-charts
 ->helm repo update
 ->helm show values grafana/tempo > tempo-values.yml
@@ -231,3 +231,10 @@ ramguguloth/test:v1.0  # for local testing
 - Fargate is not suitable for running applications that require low latency or high throughput.
 - Fargate is not suitable for running applications that require custom networking or security configurations.
 - Fargate is not suitable for running applications that require custom AMIs or kernel modules.
+
+## AWS EKS Ingress load balancer controller types:
+--------------------------------------------------
+1) Default backend
+2) Ingress rules
+3) Context path routing
+4) Hostname routing
